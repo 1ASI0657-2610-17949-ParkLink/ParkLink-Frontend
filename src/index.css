@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   ParkLink — Theme tokens
+   Aesthetic direction: "Pure Dark" (UntitledUI-inspired)
+   - Display font: Bricolage Grotesque
+   - Body font: Plus Jakarta Sans
+   - Palette: pure black surfaces, thin gray/white borders, vibrant teal accent
+   - NO gradients, NO mesh backgrounds, NO glassmorphism
+   - Dark by default, light mode opt-in
+   ========================================================================== */
+
+@theme {
+  /* Typography */
+  --font-display: "Bricolage Grotesque", ui-serif, Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Pure black surfaces, thin gray/white borders */
+  --color-bg: #0a0a0a;
+  --color-bg-elevated: #111111;
+  --color-bg-subtle: #161616;
+  --color-surface: #111111;
+  --color-surface-strong: #1a1a1a;
+  --color-border: #262626;
+  --color-border-strong: #404040;
+
+  --color-fg: #fafafa;
+  --color-fg-muted: #a3a3a3;
+  --color-fg-subtle: #737373;
+
+  /* Brand: teal accent for primary actions */
+  --color-primary: #2dd4bf;
+  --color-primary-fg: #0a0a0a;
+  --color-primary-hover: #5eead4;
+
+  --color-accent: #fbbf24;
+  --color-accent-fg: #0a0a0a;
+
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+  --color-info: #60a5fa;
+
+  /* Status colors (flat) */
+  --color-status-available: #4ade80;
+  --color-status-reserved: #fbbf24;
+  --color-status-occupied: #f87171;
+  --color-status-disabled: #737373;
+
+  --color-status-pending: #fbbf24;
+  --color-status-confirmed: #4ade80;
+  --color-status-active: #2dd4bf;
+  --color-status-completed: #737373;
+  --color-status-cancelled: #f87171;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --shadow-md: 0 2px 4px 0 rgb(0 0 0 / 0.6);
+  --shadow-lg: 0 8px 16px -4px rgb(0 0 0 / 0.7);
+}
+
+/* Light mode (opt-in via .light class on <html>) */
+.light {
+  --color-bg: #fafafa;
+  --color-bg-elevated: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-surface-strong: #fafafa;
+  --color-border: #e5e5e5;
+  --color-border-strong: #d4d4d4;
+
+  --color-fg: #0a0a0a;
+  --color-fg-muted: #525252;
+  --color-fg-subtle: #737373;
+
+  --color-primary: #0d9488;
+  --color-primary-fg: #fafafa;
+  --color-primary-hover: #0f766e;
+}
+
+/* ============================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html.light {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100dvh;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background-color: var(--color-primary);
+    color: var(--color-primary-fg);
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-fg-subtle);
+  }
+}
+
+/* ============================================================================
+   Components
+   ========================================================================== */
+
+@layer components {
+  /* Shimmer for skeletons */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-bg-subtle) 0%,
+      var(--color-border) 50%,
+      var(--color-bg-subtle) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* Sileo trae z-index: 50 por defecto; nuestros modales usan z-[100]. */
+  [data-sileo-viewport] {
+    z-index: 200;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Fade-in animation */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fade-in-scale {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Google Maps custom marker styles */
+.parklink-marker {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-fg);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  transform: translate(-50%, -100%);
+  position: relative;
+}
+.parklink-marker::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  background: var(--color-bg-elevated);
+  border-right: 1px solid var(--color-border-strong);
+  border-bottom: 1px solid var(--color-border-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
