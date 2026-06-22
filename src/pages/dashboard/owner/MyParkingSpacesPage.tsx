@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Edit, MoreVertical, Plus } from 'lucide-react';
+import { Edit, MapPin, MoreVertical, Plus, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useParkingSpaces } from '@/hooks/useParkingSpaces';
 import { Card, CardBody } from '@/components/ui/Card';
@@ -16,9 +16,8 @@ import {
   type ParkingSpaceRecord,
   type ParkingSpaceStatus,
 } from '@/lib/types';
-import { apiPatch, extractErrorMessage } from '@/lib/api';
+import { apiDelete, apiPatch, extractErrorMessage } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
-import { MapPin } from 'lucide-react';
 
 export function MyParkingSpacesPage() {
   const { user } = useAuth();
@@ -26,6 +25,7 @@ export function MyParkingSpacesPage() {
   const [editing, setEditing] = useState<ParkingSpaceRecord | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const mySpaces = spaces.filter((s) => s.ownerId === user?.id);
 
@@ -50,6 +50,25 @@ export function MyParkingSpacesPage() {
       setActionError(extractErrorMessage(err, 'No pudimos guardar los cambios'));
     } finally {
       setIsSaving(false);
+    }
+  }
+
+  async function handleDelete(space: ParkingSpaceRecord) {
+    const shouldDelete = window.confirm(
+      `¿Eliminar "${space.name}"? Esta acción no se puede deshacer.`,
+    );
+
+    if (!shouldDelete) return;
+
+    setActionError(null);
+    setDeletingId(space.id);
+    try {
+      await apiDelete(`/parking-spaces/${space.id}`);
+      await refetch();
+    } catch (err) {
+      setActionError(extractErrorMessage(err, 'No pudimos eliminar el estacionamiento'));
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -156,6 +175,15 @@ export function MyParkingSpacesPage() {
                     leftIcon={<MoreVertical className="size-3.5" />}
                   >
                     Ver / Editar
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => handleDelete(space)}
+                    isLoading={deletingId === space.id}
+                    leftIcon={<Trash2 className="size-3.5" />}
+                  >
+                    Eliminar
                   </Button>
                 </div>
               </CardBody>
