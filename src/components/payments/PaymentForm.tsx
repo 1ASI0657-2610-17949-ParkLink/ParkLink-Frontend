@@ -63,6 +63,7 @@ export function PaymentForm({ onPaid }: PaymentFormProps) {
         amount,
         paymentMethod: 'mock-card',
         forceResult,
+        idempotencyKey: `checkout-${reservationId}-${forceResult ?? 'auto'}`,
       };
       const payment = await apiPost<PaymentRecord>('/payments', payload);
       setResult(payment);
