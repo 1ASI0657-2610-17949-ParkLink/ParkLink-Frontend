@@ -30,7 +30,7 @@ const navByRole: Record<UserRole, NavItem[]> = {
   OWNER: [
     { to: '/dashboard', label: 'Resumen', icon: LayoutDashboard, end: true },
     { to: '/dashboard/parking-spaces', label: 'Mis estacionamientos', icon: ParkingCircle },
-    { to: '/dashboard/reservations', label: 'Reservas', icon: CalendarDays },
+    { to: '/owner/reservations', label: 'Reservas recibidas', icon: CalendarDays },
     { to: '/dashboard/notifications', label: 'Notificaciones', icon: Bell },
   ],
   ADMIN: [

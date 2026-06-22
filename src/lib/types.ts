@@ -93,6 +93,7 @@ export interface ParkingSpaceRecord {
   pricePerHour: number;
   openingTime: string;
   closingTime: string;
+  photos: string[];
   status: ParkingSpaceStatus;
   createdAt: string;
   updatedAt: string;
@@ -191,6 +192,7 @@ export interface PaymentRecord {
   amount: number;
   status: PaymentStatus;
   paymentMethod: string;
+  idempotencyKey: string | null;
   receiptCode: string;
   createdAt: string;
   updatedAt: string;
@@ -201,6 +203,7 @@ export interface CreatePaymentDto {
   amount: number;
   paymentMethod: string;
   forceResult?: 'APPROVED' | 'REJECTED';
+  idempotencyKey?: string;
 }
 
 export interface RefundPaymentDto {
