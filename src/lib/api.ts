@@ -2,7 +2,7 @@ import axios, { AxiosError, type AxiosInstance } from 'axios';
 import { useAuthStore } from '@/store/auth-store';
 import type { ApiResponse } from './types';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'https://parklink-platform.vercel.app';
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://api-gateway-xi-five.vercel.app';
 
 /**
  * Axios instance con interceptors para:

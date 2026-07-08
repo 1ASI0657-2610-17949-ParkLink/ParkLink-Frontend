@@ -1,6 +1,5 @@
 import { cn } from '@/lib/utils';
 import { BASE_URL } from '@/lib/api';
-import { MapPin } from 'lucide-react';
 
 interface StaticMapProps {
   lat: number;
@@ -51,10 +50,6 @@ export function StaticMap({
         aria-hidden="true"
         className="absolute inset-0 -z-10 mesh-bg"
       />
-      <div className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-bg/80 backdrop-blur-sm border border-border text-[10px] font-medium text-fg-muted">
-        <MapPin className="size-3" />
-        Ver mapa
-      </div>
     </div>
   );
 }

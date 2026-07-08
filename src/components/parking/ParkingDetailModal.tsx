@@ -136,7 +136,7 @@ function ParkingDetailBody({ parkingId }: ParkingDetailBodyProps) {
           lat={parking.latitude}
           lng={parking.longitude}
           zoom={16}
-          width={800}
+          width={640}
           height={400}
           className="w-full h-full"
         />

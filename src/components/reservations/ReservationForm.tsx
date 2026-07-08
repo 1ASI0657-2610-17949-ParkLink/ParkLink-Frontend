@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Clock, DollarSign, Loader2 } from 'lucide-react';
 import { toast } from '@/lib/toast';
@@ -175,6 +175,7 @@ export function ReservationForm({ parking, onSuccess }: ReservationFormProps) {
   // Default: próximo bloque reservable dentro del horario del estacionamiento.
   // useState initializer: se calcula una sola vez.
   const [defaults] = useState(() => getDefaultReservationValues(parking));
+  const [occupiedTimeMessage, setOccupiedTimeMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -190,8 +191,13 @@ export function ReservationForm({ parking, onSuccess }: ReservationFormProps) {
   const livePrice = getLivePrice(watched, parking.pricePerHour);
   const liveDuration = getLiveDuration(watched);
 
+  useEffect(() => {
+    setOccupiedTimeMessage(null);
+  }, [watched.date, watched.startTime, watched.endTime]);
+
   async function onFormSubmit(values: ReservationFormValues) {
     try {
+      setOccupiedTimeMessage(null);
       const payload: CreateReservationDto = {
         parkingSpaceId: parking.id,
         startTime: toIsoFromLocal(values.date, values.startTime),
@@ -209,6 +215,9 @@ export function ReservationForm({ parking, onSuccess }: ReservationFormProps) {
       });
     } catch (err) {
       const msg = extractErrorMessage(err, 'No pudimos crear la reserva');
+      if (msg.includes('already has a reservation')) {
+        setOccupiedTimeMessage('Este horario ya está ocupado. Elegí otro rango para reservar este espacio.');
+      }
       toast.error('Error al reservar', { description: msg });
     }
   }
@@ -277,6 +286,15 @@ export function ReservationForm({ parking, onSuccess }: ReservationFormProps) {
           </span>
         </div>
       </div>
+
+      {occupiedTimeMessage ? (
+        <div
+          role="alert"
+          className="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger"
+        >
+          {occupiedTimeMessage}
+        </div>
+      ) : null}
 
       <Button type="submit" fullWidth isLoading={isSubmitting} size="lg">
         {isSubmitting ? (
